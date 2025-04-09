@@ -3,6 +3,7 @@ import {Route, Routes} from "react-router-dom";
 import CityListing from "./pages/CityListing.jsx";
 import Layout from "./Layout/Layout.jsx";
 import CityTour from "./pages/CityTour.jsx"
+import ScamPage from "./pages/ScamPage.jsx";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
               <Route index element={<Home />} />
               <Route path="/cities" element={<CityListing />} />
               <Route path="/cities/:id" element={<CityTour />} />
+              <Route path="/scam" element={<ScamPage />} />
           </Route>
       </Routes>
     </>

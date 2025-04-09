@@ -1,4 +1,7 @@
 
+using Tour_Guide_Api.Abstractions;
+using Tour_Guide_Api.Services;
+
 namespace Tour_Guide_Api
 {
     public class Program
@@ -13,6 +16,10 @@ namespace Tour_Guide_Api
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("Mail"));
+
+            builder.Services.AddScoped<IEmailService, EmailService>();
 
             var app = builder.Build();
 

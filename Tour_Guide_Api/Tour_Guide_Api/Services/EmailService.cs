@@ -22,7 +22,7 @@ public class EmailService : IEmailService
     }
     public async Task SendAsync(string to, string subject, string body)
     {
-        var from = new MailAddress("lagodykk@mail.ru");
+        var from = new MailAddress(_client.Credentials!.GetCredential(_client.Host!, _client.Port, "")!.UserName);
 
         var addressTo = new MailAddress(to);
 

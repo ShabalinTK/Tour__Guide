@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Tour_Guide_Api.Models;
-using Tour_Guide_Api.DataSeeds;
+using Tour_Guide_Api.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Tour_Guide_Api.Controllers;
 
@@ -8,76 +8,86 @@ namespace Tour_Guide_Api.Controllers;
 [Route("api/[controller]")]
 public class TourController : ControllerBase
 {
-
-    public TourController()
+    private readonly ApplicationDbContext _dbContext;
+    public TourController(ApplicationDbContext dbContext)
     {
-
+        _dbContext = dbContext;
     }
 
     [HttpGet]
-    public IEnumerable<Tour> GetAllTours()
+    public IEnumerable<Tour> GetAll()
     {
-        return TourSeed.Tours;
+        return _dbContext.Tours.ToList();
     }
 
     [HttpGet("{id}")]
-    public Tour GetTourById(int id)
+    public async Task<ActionResult<Tour>> GetTourById(int id)
     {
-        var tour = TourSeed.Tours.FirstOrDefault(c => c.Id == id);
+        var tour = await _dbContext.Tours.Where(t => t.Id == id).FirstOrDefaultAsync();
 
-        return tour ?? throw new Exception($"Тур с ID {id} не найден");
+        if (tour == null)
+        {
+            return NotFound($"Тур с ID {id} не найден");
+        }
+
+        return tour;
     }
 
     [HttpGet("filtered")]
-    public IActionResult GetFilteredTours(
-    [FromQuery] List<string>? themes,
-    [FromQuery] List<string>? destinations,
-    [FromQuery] List<string>? durations,
-    [FromQuery] string? sortBy) // "popularity", "price_low_to_high", "price_high_to_low"
+    public async Task<ActionResult<IEnumerable<Tour>>> GetFilteredTours(
+        [FromQuery] List<string>? themes,
+        [FromQuery] List<string>? destinations,
+        [FromQuery] List<string>? durations,
+        [FromQuery] string? sortBy) // "popularity", "price_low_to_high", "price_high_to_low"
     {
-        var filtered = TourSeed.Tours.AsQueryable();
+        var query = _dbContext.Tours.AsQueryable();
 
-        // Фильтрация (остается без изменений)
+        // Фильтрация по темам (через Activities)
         if (themes != null && themes.Any())
         {
-            filtered = filtered.Where(t =>
+            query = query.Where(t =>
                 t.Activities != null &&
-                t.Activities.Any(a => themes.Any(th => a.Contains(th))));
+                themes.Any(th => t.Activities.Contains(th)));
         }
 
+        // Фильтрация по городам назначения
         if (destinations != null && destinations.Any())
         {
-            filtered = filtered.Where(t =>
-                destinations.Contains(t.City) ||
-                (t.Details.ContainsKey("Destination") &&
-                 destinations.Any(d => t.Details["Destination"].ToString().Contains(d))));
+            query = query.Where(t => destinations.Contains(t.City));
         }
 
+        // Фильтрация по продолжительности
         if (durations != null && durations.Any())
         {
-            filtered = filtered.Where(t =>
-                t.Details.ContainsKey("Duration") &&
-                durations.Any(dur => t.Details["Duration"].ToString().Contains(dur)));
+            query = query.Where(t =>
+                t.Duration != null &&
+                durations.Any(dur => t.Duration.Contains(dur)));
         }
 
         // Сортировка
-        filtered = sortBy switch
+        query = sortBy switch
         {
-            "popularity" => filtered.OrderByDescending(t => t.Reviews),
-            "price_low_to_high" => filtered.OrderBy(t => t.Price),
-            "price_high_to_low" => filtered.OrderByDescending(t => t.Price),
-            _ => filtered
+            "popularity" => query.OrderByDescending(t => t.Reviews),
+            "price_low_to_high" => query.OrderBy(t => t.Price),
+            "price_high_to_low" => query.OrderByDescending(t => t.Price),
+            _ => query
         };
 
-        return Ok(filtered.ToList());
+        var result = await query.ToListAsync();
+
+        return Ok(result);
     }
 
     [HttpGet("{tourId}/comments")]
-    public IActionResult GetTourComments(int tourId)
+    public async Task<ActionResult<IEnumerable<Comment>>> GetTourComments(int tourId)
     {
-        var comments = CommentSeed.Comments
-            .Where(c => c.TourId == tourId)
-            .ToList();
+        var comments = await _dbContext.Comments
+            .Where(c => c.TourId == tourId).ToListAsync();
+
+        if (!comments.Any())
+        {
+            return NotFound($"Комментарии для тура с ID {tourId} не найдены");
+        }
 
         return Ok(comments);
     }

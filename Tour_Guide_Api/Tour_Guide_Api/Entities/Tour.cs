@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Tour_Guide_Api.Models.Entities;
+namespace Tour_Guide_Api.Entities;
 
 public class Tour
 {
@@ -10,21 +10,20 @@ public class Tour
     public string City { get; set; }
     public string Theme { get; set; }
     public int Reviews { get; set; }
-    public string ImageUrls { get; set; }
+    public string ImageUrls { get; set; } // Ссылки через запятую
     public int Price { get; set; }
     public string Description { get; set; }
-    public List<string> Activities { get; set; }
-    public Dictionary<string, List<string>> Includes { get; set; } = new Dictionary<string, List<string>>()
-    {
-        ["Includes"] = new List<string>(),
-        ["NotIncludes"] = new List<string>()
-    };
-    public List<string> Safety { get; set; }
-    public Dictionary<string, object> Details { get; set; } = new Dictionary<string, object>()
-    {
-        ["Language"] = new List<string>(),
-        ["Duration"] = "",
-        ["NumberOfPeople"] = ""
-    };
+
+    // Заменяем List<string> на строки с разделителями
+    public string Activities { get; set; } // "Активность1,Активность2"
+    public string Includes { get; set; } // "Включено1,Включено2"
+    public string NotIncludes { get; set; } // "Не включено1,Не включено2"
+    public string Safety { get; set; } // "Безопасность1,Безопасность2"
+
+    // Детали как отдельные поля
+    public string Languages { get; set; } // "Язык1,Язык2"
+    public string Duration { get; set; }
+    public string NumberOfPeople { get; set; }
+
     public string Address { get; set; }
 }

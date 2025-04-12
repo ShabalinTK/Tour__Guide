@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Tour_Guide_Api.Entities;
+using Tour_Guide_Api.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Tour_Guide_Api.Controllers;
@@ -15,15 +15,56 @@ public class TourController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<Tour> GetAll()
+    public async Task<ActionResult<IEnumerable<Tour>>> GetAll()
     {
-        return _dbContext.Tours.ToList();
+        return await _dbContext.Tours
+            .Select(p => new Tour
+            {
+                Id = p.Id,
+                Name = p.Name,
+                City = p.City,
+                Theme = p.Theme,
+                Reviews = p.Reviews,
+                ImageUrls = p.ImageUrls,
+                Price = p.Price,
+                Description = p.Description,
+                Activities = p.Activities,
+                Includes = p.Includes,
+                NotIncludes = p.NotIncludes,
+                Safety = p.Safety,
+                Languages = p.Languages,
+                Duration = p.Duration,
+                NumberOfPeople = p.NumberOfPeople,
+                Address = p.Address
+            })
+            .ToListAsync();
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Tour>> GetTourById(int id)
     {
-        var tour = await _dbContext.Tours.Where(t => t.Id == id).FirstOrDefaultAsync();
+        var tour = await _dbContext.Tours
+            .Where(t => t.Id == id)
+            .Select(t => new Tour
+            {
+                Id = t.Id,
+                Name = t.Name,
+                City = t.City,
+                Theme = t.Theme,
+                Reviews = t.Reviews,
+                ImageUrls = t.ImageUrls,
+                Price = t.Price,
+                Description = t.Description,
+                Activities = t.Activities,
+                Includes = t.Includes,
+                NotIncludes = t.NotIncludes,
+                Safety = t.Safety,
+                Languages = t.Languages,
+                Duration = t.Duration,
+                NumberOfPeople = t.NumberOfPeople,
+                Address = t.Address
+            })
+            .FirstOrDefaultAsync();
 
         if (tour == null)
         {
@@ -32,6 +73,7 @@ public class TourController : ControllerBase
 
         return tour;
     }
+
 
     [HttpGet("filtered")]
     public async Task<ActionResult<IEnumerable<Tour>>> GetFilteredTours(
@@ -73,7 +115,27 @@ public class TourController : ControllerBase
             _ => query
         };
 
-        var result = await query.ToListAsync();
+        var result = await query
+            .Select(t => new Tour
+            {
+                Id = t.Id,
+                Name = t.Name,
+                City = t.City,
+                Theme = t.Theme,
+                Reviews = t.Reviews,
+                ImageUrls = t.ImageUrls,
+                Price = t.Price,
+                Description = t.Description,
+                Activities = t.Activities,
+                Includes = t.Includes,
+                NotIncludes = t.NotIncludes,
+                Safety = t.Safety,
+                Languages = t.Languages,
+                Duration = t.Duration,
+                NumberOfPeople = t.NumberOfPeople,
+                Address = t.Address
+            })
+            .ToListAsync();
 
         return Ok(result);
     }
@@ -81,8 +143,19 @@ public class TourController : ControllerBase
     [HttpGet("{tourId}/comments")]
     public async Task<ActionResult<IEnumerable<Comment>>> GetTourComments(int tourId)
     {
-        var comments = await _dbContext.Comments
-            .Where(c => c.TourId == tourId).ToListAsync();
+        var comments = await _dbContext.Comment
+            .Where(c => c.TourId == tourId)
+            .Select(c => new Comment
+            {
+                Id = c.Id,
+                TourId = c.TourId,
+                UserName = c.UserName,
+                AvatarUrl = c.AvatarUrl,
+                CommentDate = c.CommentDate,
+                Text = c.Text,
+                Rating = c.Rating
+            })
+            .ToListAsync();
 
         if (!comments.Any())
         {

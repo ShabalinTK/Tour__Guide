@@ -12,6 +12,6 @@ public class EmailController : ControllerBase
         [FromServices] IEmailService emailService,
         [FromForm] string to)
     {
-        await emailService.SendAsync(to, "asd", "asd");
+        await emailService.SendAsync(to, "Привет!", "Привет!");
     }
 }

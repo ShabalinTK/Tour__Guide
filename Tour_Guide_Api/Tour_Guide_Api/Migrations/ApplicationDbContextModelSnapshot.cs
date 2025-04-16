@@ -53,8 +53,6 @@ namespace Tour_Guide_Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TourId");
-
                     b.ToTable("Comment");
                 });
 
@@ -76,8 +74,7 @@ namespace Tour_Guide_Api.Migrations
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -85,8 +82,7 @@ namespace Tour_Guide_Api.Migrations
 
                     b.Property<string>("Duration")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ImageUrls")
                         .IsRequired()
@@ -102,8 +98,7 @@ namespace Tour_Guide_Api.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("text");
 
                     b.Property<string>("NotIncludes")
                         .IsRequired()

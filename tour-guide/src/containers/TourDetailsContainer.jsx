@@ -17,7 +17,7 @@ function TourDetailsContainer({
         <div className="tour-details_rad">
             <DetailActivity activities={activities} />
             <DetailIncludes includes={includes} />
-            <DetailSafety safety={safety} />
+            <DetailSafety safety={[safety]} />
             <DetailDetsils details={details} />
             <DetailMeeting address={address} />
             <DetailMaps />

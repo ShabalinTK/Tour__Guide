@@ -8,10 +8,11 @@ namespace Tour_Guide_Api.Controllers;
 public class EmailController : ControllerBase
 {
     [HttpPost("send")]
-    public async Task Send(
+    public async Task<bool> Send(
         [FromServices] IEmailService emailService,
         [FromForm] string to)
     {
         await emailService.SendAsync(to, "Привет!", "Привет!");
+        return true;
     }
 }

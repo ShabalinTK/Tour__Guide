@@ -14,7 +14,7 @@ function ContainerCard({ tour }) {
             />
             <DescriptionCard description={tour.description}/>
             <TourDetailsContainer 
-                activities={tour.activities}
+                activities={[tour.activities]}
                 includes={tour.includes}
                 safety={tour.safety}
                 details={tour.details}

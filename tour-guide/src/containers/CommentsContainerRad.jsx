@@ -19,7 +19,7 @@ function CommentsContainerRad() {
 
         const fetchComments = async () => {
             try {
-                const response = await fetch(`https://localhost:7199/api/Tour/${tourId}/comments`);
+                const response = await fetch(`http://shabalin.somee.com/api/Tour/${id}/comments`);
                 
                 if (!response.ok) {
                     throw new Error(`Ошибка загрузки: ${response.status}`);

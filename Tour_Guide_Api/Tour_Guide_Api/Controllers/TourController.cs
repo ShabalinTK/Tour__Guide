@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Tour_Guide_Api.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class TourController : ControllerBase
 {
     private readonly ApplicationDbContext _dbContext;

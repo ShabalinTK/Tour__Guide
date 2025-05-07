@@ -15,7 +15,7 @@ function InfoCardContainer() {
         const fetchTour = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`https://localhost:7199/api/Tour/${id}`);
+                const response = await fetch(`http://shabalin.somee.com/api/Tour/${id}`);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);

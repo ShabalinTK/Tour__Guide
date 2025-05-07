@@ -19,7 +19,7 @@ function ActivitiesContainer() {
     useEffect(() => {
         const fetchTours = async () => {
             try {
-                const response = await fetch('https://localhost:7199/api/Tour');
+                const response = await fetch(`http://shabalin.somee.com/api/Tour`);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const data = await response.json();
 

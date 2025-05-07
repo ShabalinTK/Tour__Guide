@@ -94,7 +94,7 @@ function PlacesContainer({ sortOption, themeFilters = [], durationFilters = [], 
     useEffect(() => {
         const fetchTours = async () => {
             try {
-                const response = await fetch('https://localhost:7199/api/Tour');
+                const response = await fetch(`http://shabalin.somee.com/api/Tour`);
                 console.log('Response status:', response.status);
                 const data = await response.json();
                 console.log('API data:', data);  // Inspect the actual data structure
